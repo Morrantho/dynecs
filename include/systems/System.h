@@ -6,6 +6,7 @@ namespace dx
 	{
 	public:
 		unsigned long mask;
+		/* Entity Masks are keys, weak pointers to them are values */
 		std::unordered_map< unsigned long, std::weak_ptr< dx::Entity > > entities;
 
 		System(unsigned long _mask) : mask(_mask) {}

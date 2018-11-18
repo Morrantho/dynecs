@@ -18,7 +18,7 @@ namespace dx
 			{
 				if(entities[i] != nullptr) continue;
 				entities[i] = std::make_shared<Entity>(i);
-				// entities[i].get()->mask = 0;
+				entities[i].get()->mask = 0;
 				return entities[i];
 			}
 			return nullptr;

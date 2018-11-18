@@ -5,11 +5,6 @@
 #include <vector>
 #include <unordered_map>
 #include <array>
-
-namespace dx{
-    template<int iE, int iC, int iS>
-    class World;
-}
 /* Headers */
 /* ID Generators */
 #include "generators/Incrementor.h"
