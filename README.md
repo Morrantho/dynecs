@@ -35,21 +35,19 @@ public:
 
 ### Components:
 
-Components can be defined by extending <code>dx::Component</code> and <code>dx::ComponentGenerator</code> to generate unique class ID's:
+Components can be defined by extending <code>dx::Component</code> and <code>dx::ComponentGenerator</code> to generate the component a unique class ID:
 
 ```c++
-class Input: public Component, public dx::ComponentGenerator<Input>
+class Mouse: public Component, public dx::ComponentGenerator<Mouse>
 {
 	public:
-		int direction;
-		int mouseX;
-		int mouseY;
+		dx::Vec2 position;
 };
 ```
 
 ### Entities:
 
-Entities can be defined by extending <code> dx::Entity </code>. By implementing a virtual <code>Init()</code> method, you're supplied with a const world reference. This method is called by the world once you've created an entity via: <code>world.CreateEntity<YourEntity>()</code> With this, you add the components that this entity should be comprised of: 
+Entities can be defined by extending <code> dx::Entity </code>. By implementing the <code>dx::Entity</code> class' virtual <code>Init()</code> method, you're supplied with a const world reference. This method is called by the world once you've created an entity via: <code>std::shared_ptr<YourEntity> yourEnt = world.CreateEntity<YourEntity>()</code> With this, you add the components that this entity should be comprised of: 
 
 ```c++
 class Player: public dx::Entity
