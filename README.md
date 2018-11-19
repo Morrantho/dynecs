@@ -3,31 +3,11 @@ A Header Only C++ Entity Component System.
 
 ## Description:
 
-dynecs is a simple C++ ECS. It uses smart pointers where dynamic allocation is necessary. The world class is a container for holding entities, component data and systems for manipulating specific entities. You must first create a world to begin using the API:
-
-```c++
-#include <dynecs.h>
-
-int main(){
-	World <8,4,3>world;
-
-	return 0;
-}
-```
-The world class is a template, accepting number of entities, components and systems respectively that can exist within your world as indicated in the above snippet upon instantiation. 
+dynecs is a simple C++ ECS.
 
 ### Systems:
 
-From this point, Queue Systems that you want to run in a specific order while also defining each system's mask so that it only operates on entities with the specified components:
-
-```c++
-world.QueueSystem<dx::RenderSystem>(
-	dx::Transform::Mask() |
-	dx::Sprite::Mask()
-);
-```
-
-Systems can be defined by extending <code> dx::System </code>. The system class is purely virtual, so you'll need to provide your own <code>Tick()</code> and <code>Render()</code> methods. System masks are defined upon Queueing them into a world as indicated above:
+Systems can be defined by extending <code> dx::System </code>. The system class is purely virtual, so you'll need to provide your own <code>Tick()</code> and <code>Render()</code> methods.
 
 ```c++
 class CollisionSystem : public dx::System
@@ -69,13 +49,13 @@ class Input: public Component, public dx::ComponentGenerator<Input>
 
 ### Entities:
 
-Entities can be defined by extending <code> dx::Entity </code>. In doing so, an <code>Init()</code> callback is provided to supplying you with a world reference and the ability to add components to your entity.
+Entities can be defined by extending <code> dx::Entity </code>. By implementing a virtual <code>Init()</code> method, you're supplied with a const world reference. This method is called by the world once you've created an entity via: <code>world.CreateEntity<YourEntity>()</code> With this, you add the components that this entity should be comprised of: 
 
 ```c++
 class Player: public dx::Entity
 {
 	public:		
-		void Init(World& world){
+		void Init(const World& world){
 			world.AddComponent< dx::Input >(this);
 			world.AddComponent< dx::Sprite >(this);
 			world.AddComponent< dx::Physics >(this);
@@ -85,6 +65,33 @@ class Player: public dx::Entity
 		}
 };
 ```
+### World API:
+
+#### std::shared_ptr<Entity> CreateEntity()
+
+Returns a shared pointer to an entity that gets stored into the world's entity list. 
+
+#### std::shared_ptr<E> CreateEntity()
+
+Returns a shared pointer to a <strong>derived</strong> entity that gets stored into the world's entity array.
+
+#### void QueueSystem<S>(unsigned long mask)
+	
+Queues a <strong>derived</strong> system into the world's system array, only operating on future entities that have the same mask as the supplied mask. The order in which systems are queued is important. For instance, you wouldn't queue a RenderSystem before an InputSystem.
+
+#### bool HasComponent<C>(const std::shared_ptr<Entity> &e)
+	
+Determines if the supplied entity contains the supplied component.
+
+#### std::shared_ptr<C> AddComponent(const std::shared_ptr<Entity> &e)
+
+Adds the supplied component to the supplied entity if it doesn't already contain it. In adding a component, it may now match an existing system's mask. If this is true, the entity will be placed into that system's list of entities for future operation.
+
+#### void RemoveComponent<C>(const std::shared_ptr<Entity> &e)
+	
+Removes the supplied component from the supplied entity if it contains it. In removing a component, it may no longder match an existing system's mask. If this is true, the entity will be removed from that system's list of entities.
 
 
-### World:
+#### std::shared_ptr<C> GetComponent(const std::shared_ptr<Entity> &e)
+	
+Returns a shared pointer to the supplied component for the supplied entity if this entity contains this component. Otherwise, returning null.
