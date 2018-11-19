@@ -65,31 +65,49 @@ class Player: public dx::Entity
 ```
 ### World API:
 
-#### std::shared_ptr<Entity> CreateEntity()
+```c++
+std::shared_ptr<Entity> CreateEntity()
+```
 
-Returns a shared pointer to an entity that gets stored into the world's entity list. 
+Returns a shared pointer to an entity that gets stored into the world's entity list.
 
-#### std::shared_ptr<E> CreateEntity()
-
+```c++
+template<typename E>
+std::shared_ptr<E> CreateEntity()
+```
 Returns a shared pointer to a <strong>derived</strong> entity that gets stored into the world's entity array.
 
-#### void QueueSystem<S>(unsigned long mask)
-	
+```c++
+template<typename S>
+void QueueSystem<S>(unsigned long mask)
+```
+
 Queues a <strong>derived</strong> system into the world's system array, only operating on future entities that have the same mask as the supplied mask. The order in which systems are queued is important. For instance, you wouldn't queue a RenderSystem before an InputSystem.
 
-#### bool HasComponent<C>(const std::shared_ptr<Entity> &e)
+```c++
+template<typename C>
+bool HasComponent<C>(const std::shared_ptr<Entity> &e)
+```
 	
 Determines if the supplied entity contains the supplied component.
 
-#### std::shared_ptr<C> AddComponent(const std::shared_ptr<Entity> &e)
+```c++
+template<typename C>
+std::shared_ptr<C> AddComponent(const std::shared_ptr<Entity> &e)
+```
 
 Adds the supplied component to the supplied entity if it doesn't already contain it. In adding a component, it may now match an existing system's mask. If this is true, the entity will be placed into that system's list of entities for future operation.
 
-#### void RemoveComponent<C>(const std::shared_ptr<Entity> &e)
-	
+```c++
+template<typename C>
+void RemoveComponent<C>(const std::shared_ptr<Entity> &e)
+```
+
 Removes the supplied component from the supplied entity if it contains it. In removing a component, it may no longder match an existing system's mask. If this is true, the entity will be removed from that system's list of entities.
 
+```c++
+template<typename C>
+std::shared_ptr<C> GetComponent(const std::shared_ptr<Entity> &e)
+```
 
-#### std::shared_ptr<C> GetComponent(const std::shared_ptr<Entity> &e)
-	
-Returns a shared pointer to the supplied component for the supplied entity if this entity contains this component. Otherwise, returning null.
+Returns a shared pointer to the supplied component for the supplied entity if this entity contains this component. Otherwise, returns null.
